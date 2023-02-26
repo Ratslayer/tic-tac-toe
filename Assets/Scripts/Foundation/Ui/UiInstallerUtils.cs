@@ -7,12 +7,20 @@ namespace BB.UI
 		public static void Pointer(this IBinder binder)
 		{
 			binder.AddComponent<PointerTarget>();
+			binder.System<BroadcastPointerEvents>();
 			binder.Event<PointerClicked>();
 			binder.Event<PointerPressed>();
 			binder.Event<PointerReleased>();
 			binder.Event<UiElementSelected>();
 			binder.Event<UiElementDeselected>();
-			binder.System<BroadcastPointerEvents>();
+		}
+		public static void Hover(this IBinder binder)
+		{
+			binder.AddComponent<HoverTarget>();
+			binder.System<BroadcastHoverEvents>();
+			binder.Event<HoverEntered>();
+			binder.Event<HoverExited>();
+			binder.Event<HoverMoved>();
 		}
 		public static void Text(this IBinder binder)
 		{

@@ -1,48 +1,57 @@
 ﻿using UnityEngine;
+using BB.UI;
+using Sirenix.OdinInspector;
 
 namespace BB
 {
 	public sealed class GridInstaller : AbstractInstallerBehaviour
 	{
 		public float _lineThickness = 0.1f;
-		public GameObject _linePrefab;
+		[Required]
+		public GameObject _linePrefab, _hintPrefab;
 		public override void InstallBindings(IBinder binder)
 		{
 			binder.Component<GridInstaller>();
 			binder.System<DrawGrid>();
+			binder.System<ShowHintOnHover>();
+			binder.System<PublishGridEvents>();
+			binder.Pointer();
+			binder.Hover();
 		}
 	}
-	public sealed record DrawGrid(
-		GridInstaller Grid,
-		GameObjectPools Pools,
-		IGameRules Rules) : EntitySystem, IOnSpawn
+	public sealed record ShowHintOnHover(
+		GridInstaller Ui,
+		IGrid Grid,
+		GameObjectPools Pools) : EntitySystem
 	{
-		public void OnSpawn()
+		IEntity _instance;
+		[Subscribe]
+		void OnHover(HoverCellEvent msg)
 		{
-			var transform = Entity.GetComponent<RectTransform>();
-			var size = transform.rect.size;
-			var rows = Rules.NumRows;
-			var cols = Rules.NumColumns;
-			var cellSize = size.x / cols;
-			foreach (var i in 0..cols)
-				DrawLine(new(0, size.y), Vector2.right, i);
-			foreach (var i in 0..rows)
-				DrawLine(new(size.x, 0), Vector2.up, i);
-			void DrawLine(Vector2 to, Vector2 dir, int multiplier)
+			if (msg.Cell == null)
 			{
-				var offset = multiplier * cellSize * dir - size * 0.5f;
-				SpawnLine(offset, to + offset);
+				_instance?.Despawn();
+				_instance = null;
+				return;
 			}
+			if (_instance == null)
+			{
+				_instance = Pools.Spawn(Ui._hintPrefab, new(Entity.GetTransform()));
+				var cellSize = Grid.GetCellSize();
+				_instance.GetTransform().localScale = new Vector3(cellSize, cellSize, 1f);
+			}
+			_instance.GetTransform().position = Grid.GetCellCenter(msg.Cell);
 		}
-		void SpawnLine(Vector2 from, Vector2 to)
+		[Subscribe]
+		void OnClick(ClickedCellEvent msg)
 		{
-			var line = Pools.Spawn(Grid._linePrefab, new(Grid.transform));
-			var dir = to - from;
-			var center = (from + to) * 0.5f;
-			var angle = Vector3.Angle(Vector3.right, dir);
-			var scale = new Vector3(dir.magnitude, Grid._lineThickness, 1f);
-			var t = line.GetTransform();
-			t.SetLocalTRS(center, Quaternion.Euler(0, 0, angle), scale);
+			if (msg.Cell == null)
+				return;
+			var click = Pools.Spawn(Ui._hintPrefab, new(Entity.GetTransform()));
+			var cellSize = Grid.GetCellSize();
+			click.GetTransform().localScale = new Vector3(cellSize, cellSize, 1f);
+			click.GetTransform().position = Grid.GetCellCenter(msg.Cell);
 		}
 	}
+	public sealed record CellData(int X, int Y);
 }

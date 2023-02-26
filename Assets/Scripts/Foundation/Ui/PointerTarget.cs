@@ -13,7 +13,8 @@ namespace BB.UI
 		ISelectHandler,
 		IDeselectHandler
 	{
-		public event Action Pressed, Released, Clicked, Selected, Deselected;
+		public event Action<PointerEventData> Pressed, Released, Clicked;
+		public event Action Selected, Deselected;
 
 		public void OnDeselect(BaseEventData eventData)
 		{
@@ -22,16 +23,16 @@ namespace BB.UI
 
 		public void OnPointerClick(PointerEventData eventData)
 		{
-			Clicked?.Invoke();
+			Clicked?.Invoke(eventData);
 		}
 		public void OnPointerDown(PointerEventData eventData)
 		{
-			Pressed?.Invoke();
+			Pressed?.Invoke(eventData);
 		}
 
 		public void OnPointerUp(PointerEventData eventData)
 		{
-			Released?.Invoke();
+			Released?.Invoke(eventData);
 		}
 
 		public void OnSelect(BaseEventData eventData)
@@ -64,15 +65,24 @@ namespace BB.UI
 			Target.Selected -= OnSelected;
 			Target.Deselected -= OnDeselected;
 		}
-		void OnPress() => Pressed.Publish(new());
-		void OnRelease() => Released.Publish(new());
-		void OnClick() => Clicked.Publish(new());
+		void OnPress(PointerEventData data) => Pressed.Publish(new(data));
+		void OnRelease(PointerEventData data) => Released.Publish(new(data));
+		void OnClick(PointerEventData data) => Clicked.Publish(new(data));
 		void OnSelected() => Selected.Publish(new());
 		void OnDeselected() => Deselected.Publish(new());
 	}
-	public readonly struct PointerClicked { }
-	public readonly struct PointerReleased { }
-	public readonly struct PointerPressed { }
+	public readonly struct PointerClicked {
+		public readonly PointerEventData _data;
+		public PointerClicked(PointerEventData data) => _data = data;
+	}
+	public readonly struct PointerReleased {
+		public readonly PointerEventData _data;
+		public PointerReleased(PointerEventData data) => _data = data;
+	}
+	public readonly struct PointerPressed {
+		public readonly PointerEventData _data;
+		public PointerPressed(PointerEventData data) => _data = data;
+	}
 	public readonly struct UiElementSelected { }
 	public readonly struct UiElementDeselected { }
 }

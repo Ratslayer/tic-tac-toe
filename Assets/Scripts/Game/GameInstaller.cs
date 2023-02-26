@@ -18,6 +18,9 @@ namespace BB
 			binder.System<GameObjectPools>();
 			binder.System<IPools, EntityPools>();
 			binder.Data<IGameRules>(this);
+			binder.System<IGrid, Grid>();
+			binder.Event<HoverCellEvent>();
+			binder.Event<ClickedCellEvent>();
 		}
 	}
 	public interface IGameRules
