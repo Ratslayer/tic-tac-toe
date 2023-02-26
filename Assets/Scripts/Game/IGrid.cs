@@ -9,6 +9,7 @@ namespace BB
 		public Vector2 Size { get; }
 		public int NumRows { get; }
 		public int NumColumns { get; }
+		public Transform Transform { get; }
 	}
 	public sealed record Grid(IGameRules Rules) : EntitySystem, IGrid
 	{
@@ -21,6 +22,8 @@ namespace BB
 		public int NumRows => Rules.NumRows;
 
 		public int NumColumns => Rules.NumColumns;
+
+		public Transform Transform => _rect.transform;
 	}
 	public static class GridExtensions
 	{

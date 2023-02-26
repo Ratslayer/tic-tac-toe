@@ -13,9 +13,13 @@ namespace BB
 	{
 		[SerializeField]
 		List<AbstractEntityExtension> _extensions = new();
+		[SerializeField]
+		List<AbstractInstaller> _installers = new();
 		public void InstallBindings(IBinder binder)
 		{
 			Install(binder);
+			foreach(var installer in _installers)
+				installer.InstallBindings(binder);
 			foreach(var extension in _extensions)
 				extension.Append(binder);
 		}

@@ -511,6 +511,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _lineThickness: 1
   _linePrefab: {fileID: 1836394688954136172, guid: ddfb1dff60a474e44bfb10a0fbf43550, type: 3}
+  _hintPrefab: {fileID: 1836394688954136172, guid: b542e384acaa89149aec84a91608f55d, type: 3}
 --- !u!1 &1963087873
 GameObject:
   m_ObjectHideFlags: 0

@@ -19,8 +19,10 @@ namespace BB
 			binder.System<IPools, EntityPools>();
 			binder.Data<IGameRules>(this);
 			binder.System<IGrid, Grid>();
+			binder.System<GridEntitiesList>();
 			binder.Event<HoverCellEvent>();
 			binder.Event<ClickedCellEvent>();
+			binder.Event<RedrawHintEvent>();
 		}
 	}
 	public interface IGameRules
@@ -28,5 +30,4 @@ namespace BB
 		int NumRows { get; }
 		int NumColumns { get; }
 	}
-	
 }

@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df178bcc47a129d479d31f78c0f074a9, type: 3}
-  m_Name: GameInstaller
+  m_Script: {fileID: 11500000, guid: 8fd973ddc7145cd4597aca8a48a079ae, type: 3}
+  m_Name: TicTacToeInstaller
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -22,7 +22,8 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _extensions: []
-  _installers:
-  - {fileID: 11400000, guid: 7580345af59d52a47be6088bbad3e3f8, type: 2}
-  _numRows: 6
-  _numCols: 6
+  _xPrefab: {fileID: 0}
+  _xHintPrefab: {fileID: 0}
+  _oPrefab: {fileID: 0}
+  _oHintPrefab: {fileID: 0}
+  _winSize: 3
