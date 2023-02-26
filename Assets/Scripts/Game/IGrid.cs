@@ -40,8 +40,9 @@ namespace BB
 		public static Vector2 GetCellCenter(this IGrid grid, CellData cell)
 		{
 			var cellSize = grid.GetCellSize();
-			var pos = grid.BottomLeft + new Vector2(cellSize * (cell.X+0.5f), cellSize * (cell.Y + 0.5f));
+			var pos = grid.BottomLeft + new Vector2(cellSize * (cell.X + 0.5f), cellSize * (cell.Y + 0.5f));
 			return pos;
 		}
+		public static bool IsValidIndex(this IGrid grid, int x, int y) => x >= 0 && x < grid.NumColumns && y >= 0 && y < grid.NumRows;
 	}
 }

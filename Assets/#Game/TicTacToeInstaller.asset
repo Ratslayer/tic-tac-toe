@@ -22,8 +22,9 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _extensions: []
-  _xPrefab: {fileID: 0}
-  _xHintPrefab: {fileID: 0}
-  _oPrefab: {fileID: 0}
-  _oHintPrefab: {fileID: 0}
+  _installers: []
+  _xPrefab: {fileID: 1836394688954136172, guid: 32df187ed8b467847b62ce72fd6cab58, type: 3}
+  _xHintPrefab: {fileID: 1836394688954136172, guid: 3e38e4cdf62f2e54fb1552d1a26f004e, type: 3}
+  _oPrefab: {fileID: 1836394688954136172, guid: b542e384acaa89149aec84a91608f55d, type: 3}
+  _oHintPrefab: {fileID: 1836394688954136172, guid: 4bc6b61d11800b547a5974102c5ab46b, type: 3}
   _winSize: 3

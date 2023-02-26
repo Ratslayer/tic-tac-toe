@@ -19,7 +19,7 @@ namespace BB
 			binder.System<IPools, EntityPools>();
 			binder.Data<IGameRules>(this);
 			binder.System<IGrid, Grid>();
-			binder.System<GridEntitiesList>();
+			binder.System<GridEntities>();
 			binder.Event<HoverCellEvent>();
 			binder.Event<ClickedCellEvent>();
 			binder.Event<RedrawHintEvent>();

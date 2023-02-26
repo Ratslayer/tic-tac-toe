@@ -14,11 +14,13 @@ namespace BB
 			binder.System<IHintRules, TicTacToeHintRules>();
 			binder.System<T3Manager>();
 			binder.Event<PlayedTurnEvent>();
+			binder.System<GridTeams>();
+			binder.System<T3RuleChecker>();
 		}
 	}
 	public sealed record TicTacToeHintRules(
 		TicTacToeInstaller Installer,
-		GridEntitiesList Entities,
+		GridEntities Entities,
 		T3Manager Manager) : EntitySystem, IHintRules
 	{
 		public GameObject GetPrefab(CellData cell)
