@@ -37,7 +37,7 @@ namespace BB
 	{
 		protected override IPool CreatePool() => new Pool();
 	}
-	public abstract record AbstractPools :EntitySystem, IPools
+	public abstract record AbstractPools : EntitySystem, IPools
 	{
 		readonly Dictionary<IEntityFactory, IPool> _factoryPools = new();
 		protected abstract IPool CreatePool();
@@ -68,7 +68,7 @@ namespace BB
 		}
 	}
 	public sealed record GameObjectPools(
-		EntityTransform Transform) : AbstractPools,IOnStart
+		EntityTransform Transform) : AbstractPools, IOnStart
 	{
 		//readonly Dictionary<IEntityFactory, IPool> _factoryPools = new();
 		readonly Dictionary<GameObject, IPool> _prefabPools = new();
@@ -98,7 +98,7 @@ namespace BB
 			return entity;
 		}
 
-		
+
 		//public IEntity GetOrCreateUnspawnedEntity(IEntityFactory factory)
 		//{
 		//	var pool = GetOrCreatePool(factory);

@@ -2,7 +2,7 @@
 {
 	public abstract record AbstractGridTable<T>(IGrid Grid) : EntitySystem, IOnSpawn
 	{
-		T[,] _values;
+		protected T[,] _values;
 
 		public void OnSpawn()
 		{
@@ -21,5 +21,16 @@
 		public T Get(int x, int y) => _values[x, y];
 		public T Get(CellData data) => Get(data.X, data.Y);
 	}
-	public sealed record GridEntities(IGrid Grid) : AbstractGridTable<IEntity>(Grid);
+	public sealed record GridEntities(IGrid Grid) : AbstractGridTable<IEntity>(Grid)
+	{
+		public void DespawnAndClearAll()
+		{
+			foreach (var i in X)
+				foreach (var j in Y)
+				{
+					_values[i, j]?.Despawn();
+					_values[i, j] = default;
+				}
+		}
+	}
 }

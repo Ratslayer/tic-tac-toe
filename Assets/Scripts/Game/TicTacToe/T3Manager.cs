@@ -50,6 +50,7 @@ namespace BB
 			if (!HasTotallyWon())
 				return;
 			Debug.Log($"Team {msg.Team} has won!");
+			Entities.DespawnAndClearAll();
 			bool HasTotallyWon()
 			{
 				for (int i = -1; i <= 1; i++)
