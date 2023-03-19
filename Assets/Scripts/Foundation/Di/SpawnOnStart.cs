@@ -14,13 +14,17 @@ namespace BB
 		sealed record SpawnOnStartSystem(
 		EntityTransform T,
 		SpawnAsset Data,
-		GameObjectPools Pooling) : EntitySystem
+		GameObjectPools Pooling) : EntitySystem, IOnSpawn
 		{
 			//[Subscribe]
 			//void OnLevelLoaded(LevelLoaded _)
 			//{
 			//	Pooling.Spawn(Data, new(null, T.Value));
 			//}
+			public void OnSpawn()
+			{
+				Pooling.Spawn(Data, new(null, T.Value));
+			}
 		}
 	}
 }

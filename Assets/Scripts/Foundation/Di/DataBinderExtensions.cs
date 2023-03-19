@@ -25,8 +25,8 @@ namespace BB
 				Debug.LogError($"{Entity.Name} does not have a child component of type {typeof(T).Name}");
 		}
 	}
-	public interface IValueData { }
-	public abstract class ValueData<T> : IValueData
+	public interface IVarData { }
+	public abstract class VarData<T> : IVarData
 	{
 		public T Value { get; set; }
 	}
@@ -35,8 +35,8 @@ namespace BB
 		public static void Const<T>(this IBinder binder, T value)
 			where T : IConstData
 			=> binder.BindInstance(value);
-		public static void Value<T>(this IBinder binder)
-			where T : IValueData, new()
+		public static void Var<T>(this IBinder binder)
+			where T : IVarData, new()
 			=> binder.BindInstance<T>(new());
 		public static void Data<T>(this IBinder installer)
 			where T : new()

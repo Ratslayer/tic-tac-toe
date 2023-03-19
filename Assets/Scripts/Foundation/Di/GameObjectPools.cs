@@ -25,7 +25,8 @@ namespace BB
 		}
 		sealed record PrefabFactory(GameObject Prefab) : IEntityFactory
 		{
-			public IEntity CreateEntity(IResolver parent)
+			public string Name => Prefab.name;
+			public IEntity Create(IResolver parent)
 			{
 				var instance = UnityEngine.Object.Instantiate(Prefab);
 				var entity = InstallerUtils.CreateGoEntity(instance, parent, null, true);
@@ -61,8 +62,9 @@ namespace BB
 			var pool = GetOrCreatePool(factory);
 			if (!pool.HasUnspawnedEntity(out var entity))
 			{
-				entity = factory.CreateEntity(Resolver);
+				entity = factory.Create(Resolver);
 				pool.AddCreatedEntity(entity);
+				entity.Name = $"{factory.Name} {pool.NumInstances}";
 			}
 			return entity;
 		}
@@ -93,7 +95,7 @@ namespace BB
 				var instance = UnityEngine.Object.Instantiate(prefab);
 				entity = InstallerUtils.CreateGoEntity(instance, Resolver, null, true);
 				pool.AddCreatedEntity(entity);
-				instance.name = $"{prefab.name} {pool.NumInstances}";
+				entity.Name = instance.name = $"{prefab.name} {pool.NumInstances}";
 			}
 			return entity;
 		}

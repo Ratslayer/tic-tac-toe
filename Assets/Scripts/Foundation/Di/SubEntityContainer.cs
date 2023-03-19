@@ -5,7 +5,8 @@ namespace BB
 	public interface IEntityFactory
 	{
 		bool CreatesEntity => true;
-		IEntity CreateEntity(IResolver parent);
+		string Name { get; }
+		IEntity Create(IResolver parent);
 	}
 	public static class EntityFactoryExtensions
 	{

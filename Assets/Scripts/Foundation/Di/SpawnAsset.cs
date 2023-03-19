@@ -11,7 +11,7 @@ namespace BB
 		[SerializeField]
 		AbstractInstaller _installer;
 		public GameObject Prefab => _prefab;
-		protected override IEntity Create(IResolver parent)
+		protected override IEntity CreateEntity(IResolver parent)
 			=> parent.CreateChildGameObject(_prefab, true, _installer != null ? _installer.InstallBindings : null);
 	}
 	//public interface ISpawnData

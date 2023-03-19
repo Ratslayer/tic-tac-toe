@@ -2,13 +2,14 @@
 {
 	public abstract class EntityAsset : BaseScriptableObject, IEntityFactory
 	{
-		public IEntity CreateEntity(IResolver parent)
+		public string Name => name;
+		public IEntity Create(IResolver parent)
 		{
-			var result = Create(parent);
+			var result = CreateEntity(parent);
 			if (result != null)
 				result.Name = name;
 			return result;
 		}
-		protected abstract IEntity Create(IResolver parent);
+		protected abstract IEntity CreateEntity(IResolver parent);
 	}
 }

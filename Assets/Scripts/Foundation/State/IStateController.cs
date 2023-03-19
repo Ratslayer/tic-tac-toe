@@ -55,11 +55,9 @@ namespace BB
 		private readonly Dictionary<IMachine, IStateProvider> _states = new();
 		private readonly List<Slot> _dirtySlots = new();
 		public void Enter(IMachine machine, IStateProvider source)
-			=> ChangeStates(machine, source).Forget();
-		private async UniTask ChangeStates(IMachine machine, IStateProvider to)
+			=> ChangeStates(machine, source);
+		private void ChangeStates(IMachine machine, IStateProvider to)
 		{
-			//temp fix for events being subscribed at the same time as they are published
-			await TimerUtils.WaitForEndOfFrame();
 			//copy values
 			machine ??= DEFAULT_MACHINE;
 			if (_states.TryGetValue(machine, out var from))

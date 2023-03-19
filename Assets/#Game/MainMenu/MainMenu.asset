@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df178bcc47a129d479d31f78c0f074a9, type: 3}
-  m_Name: GameInstaller
+  m_Script: {fileID: 11500000, guid: df3cb7ca5acf4dc46aaaf033b45b55a8, type: 3}
+  m_Name: MainMenu
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -21,6 +21,5 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  _extensions: []
-  _installers: []
-  _defaultState: {fileID: 11400000, guid: 92bb348d547bdb645976bf8a9ef71637, type: 2}
+  _prefab: {fileID: 660745873801891465, guid: 1fb9bb2c80f4e91488b0adccb2d5cf69, type: 3}
+  _installer: {fileID: 0}

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9df46c892bd08a5468d6f94bd7ba0a53, type: 3}
+  m_Name: GameStyle
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  _lineThickness: 3
+  _linePrefab: {fileID: 1836394688954136172, guid: ddfb1dff60a474e44bfb10a0fbf43550, type: 3}
+  _xPrefab: {fileID: 1836394688954136172, guid: 32df187ed8b467847b62ce72fd6cab58, type: 3}
+  _oPrefab: {fileID: 1836394688954136172, guid: b542e384acaa89149aec84a91608f55d, type: 3}
+  _xHintPrefab: {fileID: 1836394688954136172, guid: 3e38e4cdf62f2e54fb1552d1a26f004e, type: 3}
+  _oHintPrefab: {fileID: 1836394688954136172, guid: 4bc6b61d11800b547a5974102c5ab46b, type: 3}

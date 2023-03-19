@@ -1,51 +1,48 @@
-﻿using UnityEngine;
+﻿using MessagePipe;
+using UnityEngine;
 
 namespace BB
 {
-	public interface IHintRules
-	{
-		GameObject GetPrefab(CellData cell);
-	}
 	public sealed record ShowHintOnHover(
-		IHintRules Rules,
-		IGrid Grid,
-		GameObjectPools Pools) : EntitySystem
+		GameStyle Style,
+		GameObjectPools Pools,
+		T3Manager Manager,
+		GridTeams Teams,
+		IPublisher<SpawnGridEntityEvent> Spawn,
+		IPublisher<DespawnGridEntityEvent> Despawn) : EntitySystem
 	{
-		IEntity _instance;
 		CellData _cell;
 		[Subscribe]
-		void OnHover(HoverCellEvent msg)
+		void OnHover(HoverCellEvent msg) => UpdateHint(msg.Cell);
+		[Subscribe]
+		void OnRedrawHint(RedrawHintEvent _) => UpdateHint(_cell);
+		[Subscribe]
+		void OnDespawn(DespawnGridEntityEvent msg)
 		{
-			_cell = msg.Cell;
-			UpdateHint();
+			if (_cell == msg.Cell)
+				_cell = null;
 		}
 		[Subscribe]
-		void OnRedrawHint(RedrawHintEvent _) => UpdateHint();
+		void OnSpawn(SpawnGridEntityEvent msg)
+		{
+			if (msg.Cell == _cell)
+				_cell = null;
+		}
 		void ClearHint()
 		{
-			_instance?.Despawn();
-			_instance = null;
-		}
-		void UpdateHint()
-		{
 			if (_cell == null)
-			{
-				ClearHint();
 				return;
-			}
-			var hintPrefab = Rules.GetPrefab(_cell);
-			if (hintPrefab == null)
-			{
-				ClearHint();
+			Despawn.Publish(new(_cell));
+			_cell = null;
+		}
+		void UpdateHint(CellData cell)
+		{
+			ClearHint();
+			if (cell == null || cell.Entities.Get(cell) != null)
 				return;
-			}
-			if (_instance == null)
-			{
-				_instance = Pools.Spawn(hintPrefab, new(Grid.Transform));
-				var cellSize = Grid.GetCellSize();
-				_instance.GetTransform().localScale = new Vector3(cellSize, cellSize, 1f);
-			}
-			_instance.GetTransform().position = Grid.GetCellCenter(_cell);
+			var prefab = Style.Value.GetHintPrefab(Manager.Team);
+			Spawn.Publish(new(cell, prefab));
+			_cell = cell;
 		}
 	}
 	public sealed record RedrawHintEvent;

@@ -1,33 +1,30 @@
+using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace BB
 {
-	public sealed class GameInstaller : AbstractInstaller, IGameRules
+	public sealed class GameInstaller : AbstractInstaller
 	{
-		[SerializeField]
-		int _numRows, _numCols;
-
-		public int NumRows => _numRows;
-
-		public int NumColumns => _numCols;
-
+		[Required, SerializeField]
+		AbstractStateProvider _defaultState;
 		protected override void Install(IBinder binder)
 		{
+			binder.StateMachine(_defaultState);
 			binder.System<GameObjectPools>();
 			binder.System<IPools, EntityPools>();
-			binder.Data<IGameRules>(this);
-			binder.System<IGrid, Grid>();
-			binder.System<GridEntities>();
+			binder.Over<GameRules>();
+			binder.Over<GameStyle>();
+			//binder.System<IGrid, Grid>();
+			binder.Event<ResizeGridEvent>();
 			binder.Event<HoverCellEvent>();
 			binder.Event<ClickedCellEvent>();
 			binder.Event<RedrawHintEvent>();
+			binder.Event<PlayedTurnEvent>();
+			binder.Event<SpawnGridEntityEvent>();
+			binder.Event<DespawnGridEntityEvent>();
+			binder.T3Engine();
 		}
-	}
-	public interface IGameRules
-	{
-		int NumRows { get; }
-		int NumColumns { get; }
 	}
 }

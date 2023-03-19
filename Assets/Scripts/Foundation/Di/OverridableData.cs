@@ -8,7 +8,7 @@ namespace BB
 		void ResetToInitialValue();
 	}
 	public interface IEventData { }
-	public abstract record OverridableData<TValue> : IOverridableData
+	public abstract class OverridableData<TValue> : IOverridableData
 	{
 		public TValue Value { get; private set; }
 		public TValue InitialValue { get; private set; }
@@ -25,7 +25,7 @@ namespace BB
 		}
 		public void ResetToInitialValue() => SetValue(InitialValue);
 	}
-	public abstract record OverridableDataWithEvent<TData, TValue>
+	public abstract class OverridableDataWithEvent<TData, TValue>
 		: OverridableData<TValue>, IEventData
 		where TData : OverridableDataWithEvent<TData, TValue>
 	{

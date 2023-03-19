@@ -5,33 +5,36 @@ namespace BB
 {
 	public enum Team
 	{
-		X,
-		O
+		None = 0,
+		X = 1,
+		O = 2
 	}
-	public sealed record GridTeams(IGrid Grid) : AbstractGridTable<Team>(Grid);
+	public sealed record GridTeams : AbstractGridTable<Team> { }
 	public sealed record T3Manager(
-		GridEntities Entities,
 		GridTeams Teams,
-		TicTacToeInstaller Installer,
-		GameObjectPools Pools,
-		IGrid Grid,
+		GameStyle Style,
 		IPublisher<PlayedTurnEvent> Played,
-		IPublisher<RedrawHintEvent> RedrawHint) : EntitySystem
+		IPublisher<RedrawHintEvent> RedrawHint,
+		IPublisher<SpawnGridEntityEvent> SpawnGridEntity,
+		IPublisher<DespawnGridEntityEvent> DespawnGridEntity) : EntitySystem
 	{
 		public Team Team { get; private set; }
+		[Subscribe]
+		void OnGridResize(ResizeGridEvent msg)
+		{
+			Teams.Init(msg.Cols, msg.Rows);
+		}
 		[Subscribe]
 		void OnGridClick(ClickedCellEvent msg)
 		{
 			if (msg.Cell == null)
 				return;
-			if (Entities.Get(msg.Cell) != null)
+			if (Teams.Get(msg.Cell) != Team.None)
 				return;
-			var prefab = Team == Team.X ? Installer._xPrefab : Installer._oPrefab;
-			var pos = Grid.GetCellCenter(msg.Cell);
-			var entity = Pools.Spawn(prefab, new(Grid.Transform, pos, Quaternion.identity));
-			var size = Grid.GetCellSize();
-			entity.GetTransform().localScale = new Vector3(size, size, 1);
-			Entities.Set(msg.Cell, entity);
+			DespawnGridEntity.Publish(new(msg.Cell));
+			var prefab = Style.Value.GetTilePrefab(Team);
+			//Team == Team.X ? Installer._xPrefab : Installer._oPrefab;
+			SpawnGridEntity.Publish(new(msg.Cell, prefab));
 			Teams.Set(msg.Cell, Team);
 			Played.Publish(new(msg.Cell, Team));
 			Team = Team == Team.X ? Team.O : Team.X;
@@ -39,18 +42,17 @@ namespace BB
 		}
 	}
 	public sealed record T3RuleChecker(
-		TicTacToeInstaller Installer,
-		IGrid Grid,
-		GridEntities Entities,
+		GameRules Rules,
 		GridTeams Teams) : EntitySystem
 	{
 		[Subscribe]
 		void OnPlayTurn(PlayedTurnEvent msg)
 		{
+			var entities = msg.Cell.Entities;
 			if (!HasTotallyWon())
 				return;
 			Debug.Log($"Team {msg.Team} has won!");
-			Entities.DespawnAndClearAll();
+			entities.Clear();
 			bool HasTotallyWon()
 			{
 				for (int i = -1; i <= 1; i++)
@@ -63,12 +65,12 @@ namespace BB
 			{
 				if (xDir == 0 && yDir == 0)
 					return false;
-				foreach (var i in 1..(Installer._winSize - 1))
+				foreach (var i in 1..(Rules.Value.WinSize - 1))
 				{
 					var x = msg.Cell.X + i * xDir;
 					var y = msg.Cell.Y + i * yDir;
-					if (!Grid.IsValidIndex(x, y) 
-						|| Entities.Get(x, y) == null 
+					if (!Rules.Value.IsValidIndex(x, y)
+						|| entities.Get(x, y) == null
 						|| Teams.Get(x, y) != msg.Team)
 						return false;
 				}
