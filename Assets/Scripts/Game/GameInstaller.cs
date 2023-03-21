@@ -16,8 +16,9 @@ namespace BB
 			binder.System<IPools, EntityPools>();
 			binder.Over<GameRules>();
 			binder.Over<GameStyle>();
-			//binder.System<IGrid, Grid>();
+			//events
 			binder.Event<ResizeGridEvent>();
+			binder.Event<RestartGameEvent>();
 			binder.Event<HoverCellEvent>();
 			binder.Event<ClickedCellEvent>();
 			binder.Event<RedrawHintEvent>();

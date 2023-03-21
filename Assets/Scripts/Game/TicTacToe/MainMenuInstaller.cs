@@ -26,6 +26,7 @@ namespace BB
 		MainMenuInstaller Installer, 
 		GameObjectPools Pools,
 		IPublisher<ResizeGridEvent> Resize,
+		IPublisher<RestartGameEvent> Restart,
 		IStateController Override,
 		GameRules Rules) : EntitySystem, IOnSpawn
 	{
@@ -42,6 +43,7 @@ namespace BB
 			Override.Enter(Installer._machine, state);
 			var grid = Installer._grid.GetComponent<EntityBehaviour>().Entity;
 			Resize.Publish(new(grid, Rules.Value.NumRows, Rules.Value.NumColumns));
+			Restart.Publish();
 		}
 		void AddButton(string name, Action action)
 		{

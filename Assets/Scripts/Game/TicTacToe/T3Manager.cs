@@ -10,19 +10,23 @@ namespace BB
 		O = 2
 	}
 	public sealed record GridTeams : AbstractGridTable<Team> { }
+	public sealed record RestartGameEvent;
 	public sealed record T3Manager(
 		GridTeams Teams,
 		GameStyle Style,
 		IPublisher<PlayedTurnEvent> Played,
-		IPublisher<RedrawHintEvent> RedrawHint,
 		IPublisher<SpawnGridEntityEvent> SpawnGridEntity,
 		IPublisher<DespawnGridEntityEvent> DespawnGridEntity) : EntitySystem
 	{
 		public Team Team { get; private set; }
+		public int Turn { get; private set; }
 		[Subscribe]
-		void OnGridResize(ResizeGridEvent msg)
+		void OnGridResize(ResizeGridEvent msg) => Teams.Init(msg.Cols, msg.Rows);
+		[Subscribe]
+		void OnGameRestart(RestartGameEvent _)
 		{
-			Teams.Init(msg.Cols, msg.Rows);
+			Team = Team.X;
+			Turn = 0;
 		}
 		[Subscribe]
 		void OnGridClick(ClickedCellEvent msg)
@@ -33,32 +37,42 @@ namespace BB
 				return;
 			DespawnGridEntity.Publish(new(msg.Cell));
 			var prefab = Style.Value.GetTilePrefab(Team);
-			//Team == Team.X ? Installer._xPrefab : Installer._oPrefab;
 			SpawnGridEntity.Publish(new(msg.Cell, prefab));
 			Teams.Set(msg.Cell, Team);
-			Played.Publish(new(msg.Cell, Team));
+			Turn++;
+			var oldTeam = Team;
 			Team = Team == Team.X ? Team.O : Team.X;
-			RedrawHint.Publish();
+			Played.Publish(new(msg.Cell, oldTeam, Turn));
 		}
 	}
 	public sealed record T3RuleChecker(
 		GameRules Rules,
-		GridTeams Teams) : EntitySystem
+		GridTeams Teams,
+		IPublisher<RestartGameEvent> Restart) : EntitySystem
 	{
 		[Subscribe]
 		void OnPlayTurn(PlayedTurnEvent msg)
 		{
 			var entities = msg.Cell.Entities;
-			if (!HasTotallyWon())
+			if (!IsGameOver(msg.Team, out var team))
 				return;
-			Debug.Log($"Team {msg.Team} has won!");
-			entities.Clear();
-			bool HasTotallyWon()
+			Debug.Log($"Team {team} has won on turn {msg.TurnNumber}!");
+			Restart.Publish();
+			bool IsGameOver(Team team, out Team won)
 			{
 				for (int i = -1; i <= 1; i++)
 					for (int j = -1; j <= 1; j++)
 						if (HasWon(i, j))
+						{
+							won = team;
 							return true;
+						}
+				if (msg.TurnNumber == entities.NumCells)
+				{
+					won = Team.None;
+					return true;
+				}
+				won = default;
 				return false;
 			}
 			bool HasWon(int xDir, int yDir)
@@ -78,5 +92,5 @@ namespace BB
 			}
 		}
 	}
-	public sealed record PlayedTurnEvent(CellData Cell, Team Team);
+	public sealed record PlayedTurnEvent(CellData Cell, Team Team, int TurnNumber);
 }
