@@ -72,7 +72,6 @@ namespace BB
 	public sealed record GameObjectPools(
 		EntityTransform Transform) : AbstractPools, IOnStart
 	{
-		//readonly Dictionary<IEntityFactory, IPool> _factoryPools = new();
 		readonly Dictionary<GameObject, IPool> _prefabPools = new();
 		GameObject _parent;
 		public void OnStart()

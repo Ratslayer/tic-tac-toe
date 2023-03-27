@@ -25,6 +25,14 @@ namespace BB
 			}
 
 		}
+		public static IEntity GetEntity(this GameObject obj)
+		{
+			if (!Log.AssertNotNull(obj, "Null gameobject can't have an entity."))
+				return null;
+			if (Log.Assert(obj.TryGetComponent(out EntityBehaviour eb), $"Gameobject {obj.name} has no entity."))
+				return null;
+			return eb.Entity;
+		}
 		public static void InstallBindings(this IEnumerable<IInstaller> installers, IBinder binder)
 		{
 			foreach (var installer in installers)

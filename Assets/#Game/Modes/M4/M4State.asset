@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ca0c70629fcdea429d0e3b6c90b2bdf, type: 3}
-  m_Name: Match4
+  m_Script: {fileID: 11500000, guid: 329baa1724311bd449774b5a23a22df1, type: 3}
+  m_Name: M4State
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -21,6 +21,7 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  _numRows: 10
-  _numColumns: 10
-  _winSize: 4
+  _components:
+  - {fileID: 11400000, guid: 92bb348d547bdb645976bf8a9ef71637, type: 2}
+  - {fileID: 11400000, guid: 354326d10509872459ce9b443e20fd48, type: 2}
+  _inherit: []

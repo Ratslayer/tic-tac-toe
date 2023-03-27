@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace BB
 {
-	public sealed record ResizeGridEvent(IEntity CanvasEntity, int Rows, int Cols);
+	public sealed record ResizeGridEvent(int Cols);
 	public sealed record GridRect(
 		GameStyle Style,
 		GameObjectPools Pools,
@@ -25,11 +25,9 @@ namespace BB
 		[Subscribe]
 		void OnResize(ResizeGridEvent msg)
 		{
-			if (msg.CanvasEntity != Entity)
-				return;
 			_lines.DespawnAndClear();
 			//Transform = msg.CanvasEntity.GetTransform().GetRectTransform();
-			NumRows = msg.Rows;
+			NumRows = msg.Cols;
 			NumCols = msg.Cols;
 			Entities.Init(NumCols, NumRows);
 			var size = Size;

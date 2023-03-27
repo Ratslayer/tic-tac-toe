@@ -2,7 +2,7 @@
 using UnityEngine;
 namespace BB
 {
-	public abstract class LogicEntityAsset : EntityAsset
+	public abstract class LogicEntityAsset : AbstractSpawnAsset
 	{
 		[SerializeField]
 		SerializedLogic _logic = new();

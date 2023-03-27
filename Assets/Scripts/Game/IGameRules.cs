@@ -3,12 +3,6 @@ using UnityEngine;
 
 namespace BB
 {
-	public abstract class GameMode : EntityAsset
-	{
-		[SerializeField, Required]
-		AbstractStateProvider _state;
-
-	}
 	public interface IGameRules
 	{
 		int NumRows { get; }

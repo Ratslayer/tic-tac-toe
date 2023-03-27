@@ -5,7 +5,7 @@ namespace BB
 	public sealed class SpawnOnStart : AbstractInstallerBehaviour
 	{
 		[SerializeField, Required]
-		SpawnAsset _data;
+		SpawnGameObject _data;
 		public override void InstallBindings(IBinder binder)
 		{
 			binder.Data(_data);
@@ -13,7 +13,7 @@ namespace BB
 		}
 		sealed record SpawnOnStartSystem(
 		EntityTransform T,
-		SpawnAsset Data,
+		SpawnGameObject Data,
 		GameObjectPools Pooling) : EntitySystem, IOnSpawn
 		{
 			//[Subscribe]

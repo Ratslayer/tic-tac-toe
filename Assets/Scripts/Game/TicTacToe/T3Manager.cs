@@ -21,7 +21,7 @@ namespace BB
 		public Team Team { get; private set; }
 		public int Turn { get; private set; }
 		[Subscribe]
-		void OnGridResize(ResizeGridEvent msg) => Teams.Init(msg.Cols, msg.Rows);
+		void OnGridResize(ResizeGridEvent msg) => Teams.Init(msg.Cols, msg.Cols);
 		[Subscribe]
 		void OnGameRestart(RestartGameEvent _)
 		{

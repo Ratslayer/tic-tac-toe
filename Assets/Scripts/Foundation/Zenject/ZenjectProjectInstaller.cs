@@ -15,7 +15,6 @@ namespace BB
 			_binder = new GoZenjectBinder(Container, null, gameObject);
 			name = "Game";
 			DiServices.SetRoot(_binder);
-			DiServices.SetGame(_binder);
 			//message pipe must be configured on the container first
 			if (!Container.IsValidating)
 				GlobalMessagePipe.SetProvider(Container.AsServiceProvider());

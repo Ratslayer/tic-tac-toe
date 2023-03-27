@@ -136,17 +136,8 @@ namespace BB
 			Enter(DEFAULT_MACHINE, DefaultState);
 		}
 	}
-	//public static class StateControllerExtensions
-	//{
-
-	//	public static void StateMachine(this DiContainer container, IStateProvider provider = null)
-	//	{
-	//		container.Bind<IStateController>().To<StateController>().AsSingle().OnInstantiated<IStateController>(Instatiate).NonLazy();
-	//		void Instatiate(InjectContext context, IStateController controller)
-	//		{
-	//			if (provider != null)
-	//				controller.Enter(DEFAULT_MACHINE, provider);
-	//		}
-	//	}
-	//}
+	public static class StateControllerExtensions
+	{
+		public static void Enter(this IStateController controller, IStateProvider state) => controller.Enter(null, state);
+	}
 }

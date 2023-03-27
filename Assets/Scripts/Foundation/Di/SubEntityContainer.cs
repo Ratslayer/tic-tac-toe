@@ -8,15 +8,6 @@ namespace BB
 		string Name { get; }
 		IEntity Create(IResolver parent);
 	}
-	public static class EntityFactoryExtensions
-	{
-		public static IEntity Spawn(this IEntityFactory factory)
-		{
-			var pools = DiServices.Game.Resolve<IPools>();
-			var result = pools.Spawn(factory);
-			return result;
-		}
-	}
 	//public sealed record SubEntityContainer : EntitySystem, IOnDespawn
 	//{
 	//	readonly Dictionary<IEntityFactory, IEntity> _entities = new();

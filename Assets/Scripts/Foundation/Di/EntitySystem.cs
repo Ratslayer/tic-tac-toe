@@ -27,6 +27,7 @@ namespace BB
 			=> Entity.AddSubscription(subscription);
 		protected EventSubscription<T> Subscribe<T>(Action action)
 			=> Subscribe<T>(t => action());
+		protected void Publish<T>(T msg) => Entity.Resolver.Publish(msg);
 		void OnInstall()
 		{
 			if (this is IOnStart start)

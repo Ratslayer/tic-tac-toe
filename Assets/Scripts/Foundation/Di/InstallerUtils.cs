@@ -96,7 +96,7 @@ namespace BB
 
 			return entity;
 		}
-		static IResolver GetRootParentIfNull(IResolver parent) => parent ?? DiServices.Game;
+		static IResolver GetRootParentIfNull(IResolver parent) => parent ?? DiServices.Root;
 		static IBinder CreateBinder(GameObject instance, IResolver parent)
 			=> GetRootParentIfNull(parent).CreateChildBinder(instance);
 		public static IBinder CreateBinder(string name, IResolver parent)

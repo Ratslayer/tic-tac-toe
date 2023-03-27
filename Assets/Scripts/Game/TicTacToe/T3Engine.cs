@@ -5,8 +5,7 @@ namespace BB
 {
 	public sealed class T3Engine : EntityAsset
 	{
-		protected override IEntity CreateEntity(IResolver parent) => parent.CreateChild("T3 Engine", Install);
-		void Install(IBinder binder) => binder.T3Engine();
+		protected override void Install(IBinder binder) => binder.T3Engine();
 	}
 	public static class T3Extensions
 	{
