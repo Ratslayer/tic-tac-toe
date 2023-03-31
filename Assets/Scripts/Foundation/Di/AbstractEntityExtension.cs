@@ -11,7 +11,7 @@ namespace BB
 		void Append(IResolver resolver);
 	}
 	public sealed record AddExtensions(IEnumerable<IEntityExtension> Extensions)
-		: EntitySystem, IOnStart
+		: EntitySystem, IOnInstall
 	{
 		public void OnStart()
 		{

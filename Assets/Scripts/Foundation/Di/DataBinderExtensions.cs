@@ -10,7 +10,7 @@ namespace BB
 	}
 	public interface IConstData { }
 	public abstract record ConstData<T>(T Value) : IConstData;
-	public abstract record ChildComponent<T> : EntitySystem, IOnStart
+	public abstract record ChildComponent<T> : EntitySystem, IOnInstall
 	{
 		public T Value { get; private set; }
 		public void OnStart()

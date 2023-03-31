@@ -7,7 +7,7 @@ namespace BB
 		EntityTriggerEvents Events,
 		IPublisher<TriggerEntered> Entered,
 		IPublisher<TriggerExited> Exited)
-		: EntitySystem, IDisposable,IOnStart
+		: EntitySystem, IDisposable,IOnInstall
 	{
 		public void OnStart()
 		{

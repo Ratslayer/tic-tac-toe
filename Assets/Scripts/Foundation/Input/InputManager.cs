@@ -53,7 +53,7 @@ namespace BB {
 		IPublisher<InputPressed> Pressed,
 		IPublisher<InputReleased> Released,
 		IPublisher<InputUpdated> Updated) 
-		: EntitySystem, IOnUpdate, IOnStart, IDisposable
+		: EntitySystem, IOnUpdate, IOnInstall, IDisposable
 	{
 		InputActionMap _map;
 		InputAction _moveAction;

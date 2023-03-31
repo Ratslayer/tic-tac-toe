@@ -14,6 +14,7 @@ namespace BB
 			binder.StateMachine(_defaultState);
 			binder.System<GameObjectPools>();
 			binder.System<EntityPools>();
+			binder.System<InitSystems>();
 			binder.Over<GameRules>();
 			binder.Over<GameStyle>();
 			//events
@@ -27,18 +28,31 @@ namespace BB
 			binder.Event<DespawnGridEntityEvent>();
 			binder.T3Engine();
 		}
+		sealed record InitSystems(
+			GameObjectPools GoPools,
+			EntityPools EntityPools) : EntitySystem, GlobalSystems.ISystems, IOnInstall
+		{
+			public void OnStart()
+			{
+				GlobalSystems.Systems = this;
+			}
+		}
 	}
 	public static class GlobalSystems
 	{
-		static GameObjectPools _goPools;
-		static EntityPools _entityPools;
-		public static GameObjectPools GoPools => GetSingleton(ref _goPools);
-		public static EntityPools EntityPools => GetSingleton(ref _entityPools);
-		static T GetSingleton<T>(ref T value)
+		public interface ISystems
 		{
-			if (value == null)
-				value = DiServices.Root.Resolve<T>();
-			return value;
+			GameObjectPools GoPools { get; }
+			EntityPools EntityPools { get; }
 		}
+		public static ISystems Systems { get; set; }
+		public static GameObjectPools GoPools => Systems.GoPools; //GetSingleton(ref _goPools);
+		public static EntityPools EntityPools => Systems.EntityPools;// GetSingleton(ref _entityPools);
+		//static T GetSingleton<T>(ref T value)
+		//{
+		//	if (value == null)
+		//		value = DiServices.Root.Resolve<T>();
+		//	return value;
+		//}
 	}
 }

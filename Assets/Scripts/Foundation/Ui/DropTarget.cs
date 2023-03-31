@@ -14,9 +14,9 @@ namespace BB.UI
 			if (!go)
 				return;
 			if (go.TryGetComponent(out DragTarget drag) && TryGetComponent(out EntityBehaviour root))
-				drag.OnDrop(root.Entity);
+				drag.OnDrop(root);
 			if (go.TryGetComponent(out root))
-				ReceivedDrop?.Invoke(root.Entity);
+				ReceivedDrop?.Invoke(root);
 		}
 	}
 }

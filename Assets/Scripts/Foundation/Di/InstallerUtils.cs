@@ -25,7 +25,18 @@ namespace BB
 			Action<IBinder> install)
 		{
 			var binder = CreateBinder(name, parent);
-			return CreateAndInstallEntity(binder, BindEntity, install);
+			try
+			{
+				BindEntity(binder);
+				install(binder);
+				return binder.Resolve<IEntity>();
+			}
+			catch (Exception ex)
+			{
+				LogInstallException(ex, binder);
+				return null;
+			}
+			//return CreateAndInstallEntity(binder, BindEntity, install);
 		}
 		public static IEntity CreateGoEntity(
 			this IEntity parent,
@@ -37,39 +48,57 @@ namespace BB
 			var instance = go.CreateChild(name);
 			return CreateGoEntity(instance, parent.Resolver, install, false);
 		}
-		public static IEntity CreateGoEntity(
+		public static EntityBehaviour CreateGoEntity(
 			GameObject instance,
 			IResolver parent,
-			Action<IBinder> install, bool isRoot)
+			Action<IBinder> install,
+			bool isRoot)
 		{
+			if (instance.TryGetComponent(out EntityBehaviour eb)
+				&& eb.Resolver != null)
+				return eb;
 			var binder = CreateBinder(instance, parent);
-			var root = instance.GetOrCreateComponent<EntityBehaviour>();
-			var entity = CreateAndInstallEntity(binder, Bind, Install);
-			root.Entity = entity;
-			root.InitChildren();
-			return entity;
-			IEntity Bind(IBinder binder)
-				=> BindGoEntity(binder, instance, isRoot);
-			void Install(IBinder binder)
+			try
 			{
-				install?.Invoke(binder);
-				foreach (var installer in root.GetInstallers())
+				BindGoEntity(binder, instance, isRoot);
+				foreach (var installer in instance.GetComponents<IInstaller>())
 					installer.InstallBindings(binder);
+				install?.Invoke(binder);
+				binder.Install();
+				//get entity
+				var entity = instance.GetOrCreateComponent<EntityBehaviour>();
+				entity.Install(binder, isRoot);
+				return entity;
 			}
+			catch (Exception ex)
+			{
+				LogInstallException(ex, binder);
+				return null;
+			}
+			//var entity = CreateAndInstallEntity(binder, Bind, Install);
+			//root.Entity = entity;
+			//root.InitChildren();
+			//return entity;
+			//void Install(IBinder binder)
+			//{
+			//	install?.Invoke(binder);
+			//	foreach (var installer in root.GetInstallers())
+			//		installer.InstallBindings(binder);
+			//}
 		}
-		public static void Append(this IResolver resolver, string name, params IInstaller[] installers)
+		//public static void Append(this IResolver resolver, string name, params IInstaller[] installers)
+		//{
+		//	var container = resolver.CreateChildBinder(name);
+		//	foreach (var installer in installers)
+		//		installer.InstallBindings(container);
+		//	resolver.InvokeAfterInstall(container.ResolveRoots);
+		//}
+		public static void BindGoEntity(IBinder binder, GameObject instance, bool root)
 		{
-			var container = resolver.CreateChildBinder(name);
-			foreach (var installer in installers)
-				installer.InstallBindings(container);
-			resolver.InvokeAfterInstall(container.ResolveRoots);
-		}
-		public static IEntity BindGoEntity(IBinder binder, GameObject instance, bool root)
-		{
-			var entity = BindEntity(binder);
+			BindEntity(binder);
 			binder.Const<EntityTransform>(new(instance.transform));
-			if (root)
-				binder.Const<RootEntity>(new(entity));
+			//if (root)
+			//	binder.Const<RootEntity>(new(entity));
 			binder.System<DisableGameObjectOnDespawn>();
 			binder.AddComponent<EntityEvents>();
 			//update
@@ -78,13 +107,15 @@ namespace BB
 			binder.Event<FixedUpdateEvent>();
 			binder.Event<LateUpdateEvent>();
 			binder.System<PublishEntityEvents>();
-			return entity;
+			//return entity;
 		}
-		static IEntity BindEntity(IBinder binder)
+		static void BindEntity(IBinder binder)
 		{
-			var entity = new Entity(binder);
-			binder.BindInstance<IEntity>(entity);
-			binder.QueueForInject(entity);
+			//var entity = new Entity(binder);
+			//binder.BindInstance<IEntity>(entity);
+			//binder.QueueForInject(entity);
+			binder.Bind<IEntity, Entity>();
+			binder.Bind<EntityState>();
 			//core systems
 			binder.System<ExternalSubscriptions>();
 			binder.System<CancellationTokenManager>();
@@ -93,8 +124,6 @@ namespace BB
 			binder.Event<DisposeEvent>();
 			binder.Event<SpawnEvent>();
 			binder.Event<DespawnEvent>();
-
-			return entity;
 		}
 		static IResolver GetRootParentIfNull(IResolver parent) => parent ?? DiServices.Root;
 		static IBinder CreateBinder(GameObject instance, IResolver parent)
@@ -106,7 +135,8 @@ namespace BB
 			var child = CreateBinder(name, parent);
 			try
 			{
-				child.Install(install);
+				install?.Invoke(child);
+				child.Install();
 			}
 			catch (Exception e)
 			{
@@ -114,23 +144,23 @@ namespace BB
 			}
 			return child;
 		}
-		static IEntity CreateAndInstallEntity(
-			IBinder binder,
-			Func<IBinder, IEntity> bindEntity,
-			Action<IBinder> installer)
-		{
-			try
-			{
-				var entity = bindEntity(binder);
-				entity.Resolver.Install(installer);
-				return entity;
-			}
-			catch (Exception e)
-			{
-				LogInstallException(e, binder);
-				return null;
-			}
-		}
+		//static IEntity CreateAndInstallEntity(
+		//	IBinder binder,
+		//	Func<IBinder, Action<IBinder>, IEntity> bindEntity,
+		//	Action<IBinder> install)
+		//{
+		//	try
+		//	{
+		//		var entity = bindEntity(binder, install);
+		//		entity.Install();
+		//		return entity;
+		//	}
+		//	catch (Exception e)
+		//	{
+		//		LogInstallException(e, binder);
+		//		return null;
+		//	}
+		//}
 		public static void LogInstallException(Exception e, IResolver resolver)
 		{
 			Debug.LogError($"Install error at {resolver.GetPath()}");

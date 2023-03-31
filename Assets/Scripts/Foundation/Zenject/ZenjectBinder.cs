@@ -108,9 +108,7 @@ namespace BB
 		public void ResolveRoots()
 		{
 			_container.ResolveRoots();
-
 		}
-
 		public void EndInstall()
 		{
 			Installed = true;

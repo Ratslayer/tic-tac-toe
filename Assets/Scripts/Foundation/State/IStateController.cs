@@ -21,7 +21,7 @@ namespace BB
 	public sealed record OverrideController(
 		IStateProvider DefaultState,
 		StateContainer Container)
-		: EntitySystem, IStateController, IOnStart
+		: EntitySystem, IStateController, IOnInstall
 	{
 		private class DefaultMachine : IMachine { }
 		private static readonly DefaultMachine DEFAULT_MACHINE = new();

@@ -13,7 +13,7 @@ namespace BB
 			binder.Data((TSelf)this);
 			binder.System<AppendLogic>();
 		}
-		sealed record AppendLogic(TSelf Behaviour) : EntitySystem,IOnStart
+		sealed record AppendLogic(TSelf Behaviour) : EntitySystem,IOnInstall
 		{
 			public void OnStart()
 			{

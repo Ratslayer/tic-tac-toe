@@ -4,7 +4,7 @@ namespace BB.Logic
 {
 	public abstract record TriggerNode<TEvent>(
 		Action Action)
-		: EntitySystem,IOnStart
+		: EntitySystem,IOnInstall
 	{
 		public void OnStart()
 		{

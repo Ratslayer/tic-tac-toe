@@ -10,19 +10,20 @@ namespace BB
 		public static void Append<TSystem>(this IEntity entity, params object[] args)
 			where TSystem : EntitySystem
 			=> entity.Resolver.Create<TSystem>(args);
-		public static void Install(this IResolver resolver, Action<IBinder> install)
+		public static void Install(this IResolver resolver)
 		{
 			if (resolver.Installed)
 				return;
-			install?.Invoke(resolver as IBinder);
-			if (resolver.Parent != null)
-				resolver.Parent.InvokeAfterInstall(InstallResolver);
-			else InstallResolver();
-			void InstallResolver()
-			{
-				resolver.ResolveRoots();
-				resolver.EndInstall();
-			}
+			resolver.ResolveRoots();
+			resolver.EndInstall();
+			//install?.Invoke(resolver as IBinder);
+			//if (resolver.Parent != null)
+			//	resolver.Parent.InvokeAfterInstall(InstallResolver);
+			//else InstallResolver();
+			//void InstallResolver()
+			//{
+				
+			//}
 
 		}
 		public static IEntity GetEntity(this GameObject obj)
@@ -31,7 +32,7 @@ namespace BB
 				return null;
 			if (Log.Assert(obj.TryGetComponent(out EntityBehaviour eb), $"Gameobject {obj.name} has no entity."))
 				return null;
-			return eb.Entity;
+			return eb;
 		}
 		public static void InstallBindings(this IEnumerable<IInstaller> installers, IBinder binder)
 		{

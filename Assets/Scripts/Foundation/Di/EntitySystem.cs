@@ -24,15 +24,15 @@ namespace BB
 			return result;
 		}
 		protected void AddSubscription(ISubscription subscription)
-			=> Entity.AddSubscription(subscription);
+			=> Entity.State.AddSubscription(subscription);
 		protected EventSubscription<T> Subscribe<T>(Action action)
 			=> Subscribe<T>(t => action());
 		protected void Publish<T>(T msg) => Entity.Resolver.Publish(msg);
 		void OnInstall()
 		{
-			if (this is IOnStart start)
-				Entity.CallAtInit(start.OnStart);
-			//SubscribeAction<IOnStart, StartEvent>(l => l.OnStart());
+			//if (this is IOnInstall start)
+			//	Entity.CallAtInit(start.OnStart);
+			SubscribeAction<IOnInstall, StartEvent>(l => l.OnStart());
 			SubscribeAction<IOnSpawn, SpawnEvent>(l => l.OnSpawn());
 			SubscribeAction<IOnDespawn, DespawnEvent>(l => l.OnDespawn());
 			SubscribeAction<IDisposable, DisposeEvent>(l => l.Dispose());

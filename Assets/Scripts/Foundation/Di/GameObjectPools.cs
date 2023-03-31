@@ -44,7 +44,7 @@ namespace BB
 		protected abstract IPool CreatePool();
 		protected IPool GetOrCreate<TKey>(Dictionary<TKey, IPool> pools, TKey key)
 		{
-			if (!pools.TryGetValue(key, out var result))
+ 			if (!pools.TryGetValue(key, out var result))
 			{
 				result = CreatePool();
 				pools.Add(key, result);
@@ -70,7 +70,7 @@ namespace BB
 		}
 	}
 	public sealed record GameObjectPools(
-		EntityTransform Transform) : AbstractPools, IOnStart
+		EntityTransform Transform) : AbstractPools, IOnInstall
 	{
 		readonly Dictionary<GameObject, IPool> _prefabPools = new();
 		GameObject _parent;

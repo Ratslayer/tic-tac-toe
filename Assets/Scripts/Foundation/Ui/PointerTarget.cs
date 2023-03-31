@@ -47,7 +47,7 @@ namespace BB.UI
 		IPublisher<PointerReleased> Released,
 		IPublisher<UiElementSelected> Selected,
 		IPublisher<UiElementDeselected> Deselected)
-		: EntitySystem, IDisposable, IOnStart
+		: EntitySystem, IDisposable, IOnInstall
 	{
 		public void OnStart()
 		{

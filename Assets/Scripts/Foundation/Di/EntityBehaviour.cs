@@ -1,19 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 namespace BB
 {
-	public sealed class EntityBehaviour : MonoBehaviour
+	public sealed class EntityBehaviour : MonoBehaviour, IEntity
 	{
 		public IEnumerable<IInstaller> GetInstallers() => GetComponents<IInstaller>();
-		public IEntity Entity { get; set; }
+		readonly List<EntityBehaviour> _children = new List<EntityBehaviour>();
+
+		public IResolver Resolver { get; private set; }
+		public EntityState State { get; private set; }
 		private void Start()
 		{
 			Install();
 		}
-		public void Install()
+		void Install()
 		{
-			if (Entity != null)
+			if (Resolver != null)
 				return;
 			//if this is reached, it means that this object is not pooled
 			var parentRoot = transform.parent ? transform.parent.GetComponentInParent<EntityBehaviour>() : default;
@@ -21,18 +25,43 @@ namespace BB
 			if (parentRoot)
 			{
 				parentRoot.Install();
-				parentResolver = parentRoot.Entity.Resolver;
+				parentResolver = parentRoot.Resolver;
 			}
-			InstallerUtils.CreateGoEntity(gameObject, parentResolver, null, true);
-			InitChildren();
-			Entity.Append<DestroyOnDespawn>();
-			Entity.Spawn();
+			var entity = InstallerUtils.CreateGoEntity(gameObject, parentResolver, null, true);
+			entity.Append<DestroyOnDespawn>();
+			entity.Spawn();
 		}
-		public void InitChildren()
+		public void Install(IBinder binder, bool root)
 		{
-			foreach (var comp in GetComponentsInChildren<IEntityComponent>(true))
-				comp.Entity = Entity;
+			Resolver = binder;
+			State = Resolver.Resolve<EntityState>();
+			
+			foreach (var installer in GetComponentsInChildren<AbstractInstallerBehaviour>())
+			{
+				if (installer.GetComponent<EntityBehaviour>())
+					continue;
+				var entity = InstallerUtils.CreateGoEntity(installer.gameObject, binder, null, false);
+				_children.Add(entity);
+			}
+			//foreach (var comp in GetComponentsInChildren<IEntityComponent>(true))
+			//	comp.Entity = Entity;
 		}
+		void InvokeForAll(Action<EntityBehaviour> action)
+		{
+			action(this);
+			foreach (var child in _children)
+				action(child);
+		}
+		public void Spawn()
+		{
+			State.Spawn();
+			foreach (var child in _children)
+				child.Spawn();
+		}
+
+		public void Despawn() => InvokeForAll(e => e.State.Despawn());
+		public void Dispose() => InvokeForAll(e => e.State.Dispose());
+
 		sealed record DestroyOnDespawn(EntityTransform Transform)
 			: EntitySystem, IOnDespawn
 		{
@@ -53,7 +82,7 @@ namespace BB
 		{
 			if (obj && obj.TryGetComponentInParent(out EntityBehaviour eb))
 			{
-				entity = eb.Entity;
+				entity = eb;
 				return true;
 			}
 			entity = default;

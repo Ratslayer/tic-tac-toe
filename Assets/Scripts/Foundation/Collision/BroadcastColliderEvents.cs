@@ -13,7 +13,7 @@ namespace BB
 	public sealed record BroadcastColliderEvents(
 		EntityColliderEvents Events,
 		IPublisher<CollisionEntered> Entered)
-		: EntitySystem, IDisposable, IOnStart
+		: EntitySystem, IDisposable, IOnInstall
 	{
 		public void OnStart()
 		{
@@ -26,7 +26,7 @@ namespace BB
 		void OnEnter(Collision collision)
 		{
 			var behaviour = collision.gameObject.GetComponentInParent<EntityBehaviour>();
-			Entered.Publish(new(behaviour.Entity, collision));
+			Entered.Publish(new(behaviour, collision));
 		}
 	}
 	public static class CollisionInstallUtils

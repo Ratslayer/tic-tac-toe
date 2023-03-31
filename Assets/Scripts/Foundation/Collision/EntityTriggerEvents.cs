@@ -18,9 +18,8 @@ namespace BB
 		}
 		void Enter(Collider collider)
 		{
-			if (collider.TryGetComponentInParent(out EntityBehaviour eb))
+			if (collider.TryGetComponentInParent(out EntityBehaviour entity))
 			{
-				var entity = eb.Entity;
 				if (!_entities.Contains(entity))
 					OnEntityEnter?.Invoke(entity);
 				_entities.Add(entity);
@@ -28,9 +27,8 @@ namespace BB
 		}
 		void Exit(Collider collider)
 		{
-			if (collider && collider.TryGetComponentInParent(out EntityBehaviour eb))
+			if (collider && collider.TryGetComponentInParent(out EntityBehaviour entity))
 			{
-				var entity = eb.Entity;
 				_entities.Remove(entity);
 				if (!_entities.Contains(entity))
 					OnEntityEnter?.Invoke(entity);

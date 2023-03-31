@@ -4,42 +4,52 @@ using MessagePipe;
 
 namespace BB
 {
-	public sealed class ZenjectProjectInstaller : MonoInstaller
+	public sealed class ZenjectProjectInstaller : BaseScriptableObject
 	{
+		public const string RESOURCE_NAME = "ProjectInstaller";
+		public const string CONTAINER_NAME = "Project";
 		[SerializeField]
 		private AbstractInstaller _installerAsset;
 		IBinder _binder;
-		IEntity _entity;
-		public override void InstallBindings()
+		void Install()
 		{
-			_binder = new GoZenjectBinder(Container, null, gameObject);
-			name = "Game";
-			DiServices.SetRoot(_binder);
-			//message pipe must be configured on the container first
-			if (!Container.IsValidating)
-				GlobalMessagePipe.SetProvider(Container.AsServiceProvider());
-			_entity = InstallerUtils.BindGoEntity(_binder, gameObject, true);
+			var container = new DiContainer(StaticContext.Container);
+			////message pipe must be configured on the container first
+			//var serviceProvider = container.AsServiceProvider();
+			//GlobalMessagePipe.SetProvider(serviceProvider);
+			//if (!container.IsValidating)
+			//create instance
+			var instance = new GameObject(RESOURCE_NAME);
+			DontDestroyOnLoad(instance);
+			//install binder
+			_binder = new GoZenjectBinder(container, null, instance);
+			InstallerUtils.BindGoEntity(_binder, instance, true);
 			_installerAsset.InstallBindings(_binder);
-		}
-		public override void Start()
-		{
-			_entity.Resolver.EndInstall();
-			_entity.Spawn();
+			_binder.Install();
+			//register as this binder as root
+			DiServices.SetRoot(_binder);
+			//spawn
+			var entity = _binder.Resolve<IEntity>();
+			entity.Spawn();
 		}
 		//before splash screen does not work properly in build
 		//on first scene load everything gets cleared
 		//so call on first scene load instead
-		static bool _initialized = false;
-		//reset initialized on splash screen to allow disabling domain reload
+		//static bool _initialized = false;
+		////reset initialized on splash screen to allow disabling domain reload
+		//[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
+		//static void ResetInitialize() => _initialized = false;
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
-		static void ResetInitialize() => _initialized = false;
-		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 		static void InstallProject()
 		{
-			if (_initialized)
+			//if (_initialized)
+			//	return;
+			//_initialized = true;
+			var installer = Resources.Load<ZenjectProjectInstaller>(RESOURCE_NAME);
+			if (!Log.AssertNotNull(installer, $"No installer '{RESOURCE_NAME}' found in resources."))
 				return;
-			_initialized = true;
-			ProjectContext.Instance.EnsureIsInitialized();
+			installer.Install();
+			//ProjectContext.Instance.EnsureIsInitialized();
 		}
 	}
 }

@@ -31,7 +31,7 @@ namespace BB.UI
 		IPublisher<UiBeginDrag> BeganDrag,
 		IPublisher<UiEndDrag> EndedDrag,
 		IPublisher<UiDropped> Dropped,
-		DragTarget Draggable) : EntitySystem, IDisposable, IOnStart
+		DragTarget Draggable) : EntitySystem, IDisposable, IOnInstall
 	{
 		public void OnStart()
 		{
@@ -60,7 +60,7 @@ namespace BB.UI
 
 
 	}
-	public abstract record UiDragSystem : EntitySystem, IOnStart
+	public abstract record UiDragSystem : EntitySystem, IOnInstall
 	{
 		protected abstract void OnBeginDrag();
 		protected abstract void OnEndDrag();
@@ -107,7 +107,7 @@ namespace BB.UI
 	public sealed record MoveOnDrag(
 		EntityTransform T,
 		DragTarget draggable)
-		: EntitySystem, IDisposable, IOnStart
+		: EntitySystem, IDisposable, IOnInstall
 	{
 		readonly DragTarget _draggable;
 		public void OnStart()

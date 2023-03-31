@@ -19,7 +19,7 @@ namespace BB.UI
 		IPublisher<HoverEntered> Entered,
 		IPublisher<HoverExited> Exited,
 		IPublisher<HoverMoved> Moved)
-		: EntitySystem, IDisposable, IOnStart
+		: EntitySystem, IDisposable, IOnInstall
 	{
 		public void OnStart()
 		{

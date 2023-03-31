@@ -22,4 +22,4 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _state: {fileID: 11400000, guid: 341fd08484b273d49aba7fb602a94ea8, type: 2}
-  _gridUi: {fileID: 1929715286151334340, guid: f9e9319801f816a43a480b3278b1573b, type: 3}
+  _ui: {fileID: 5153109652100801315, guid: f9e9319801f816a43a480b3278b1573b, type: 3}

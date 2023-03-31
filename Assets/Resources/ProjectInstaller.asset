@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06ae7edc69306224098163753a3e3efb, type: 3}
-  m_Name: M4Mode
+  m_Script: {fileID: 11500000, guid: 2597759249eba4441be2b17a288b8445, type: 3}
+  m_Name: ProjectInstaller
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -21,5 +21,4 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  _state: {fileID: 11400000, guid: 606fbd5116454d24f87f590a1718469d, type: 2}
-  _ui: {fileID: 5153109652100801315, guid: f9e9319801f816a43a480b3278b1573b, type: 3}
+  _installerAsset: {fileID: 11400000, guid: 330e6e05660ae5f428dba7c1cc27f607, type: 2}
