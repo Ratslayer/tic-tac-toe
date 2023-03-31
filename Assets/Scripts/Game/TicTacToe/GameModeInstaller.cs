@@ -1,4 +1,5 @@
 ﻿using Sirenix.OdinInspector;
+using System;
 using UnityEngine;
 
 namespace BB
@@ -18,7 +19,9 @@ namespace BB
 	public sealed record InitGameUi(
 		GameModeInstaller Installer,
 		IStateController Controller,
-		GameRules Rules) : EntitySystem, IOnSpawn, IOnDespawn
+		GameRules Rules,
+		GameStyle Style,
+		MainMenuPrefab MainMenu) : EntitySystem, IOnSpawn, IOnDespawn
 	{
 		IEntity _grid;
 
@@ -31,8 +34,16 @@ namespace BB
 		{
 			Controller.Enter(Installer._state);
 			_grid = Installer._ui.Spawn(new(null), out var ui);
+			Button("Restart", () => Publish(new RestartGameEvent()));
+			Button("Exit", Exit);
 			Publish(new ResizeGridEvent(Rules.Value.NumColumns));
 			Publish(new RestartGameEvent());
+			void Exit()
+			{
+				Entity.Despawn();
+				MainMenu.Value.Spawn(new(null));
+			}
+			void Button(string name, Action action) => Style.Value.ButtonPrefab.SpawnButton(ui._buttons, name, action);
 		}
 	}
 }

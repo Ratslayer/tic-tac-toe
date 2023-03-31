@@ -6,6 +6,7 @@ namespace BB
 	{
 		float LineWidth { get; }
 		GameObject LinePrefab { get; }
+		GameObject ButtonPrefab { get; }
 		GameObject GetHintPrefab(Team team);
 		GameObject GetTilePrefab(Team team);
 	}

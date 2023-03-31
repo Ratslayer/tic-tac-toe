@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace BB
 {
@@ -6,13 +7,13 @@ namespace BB
 	{
 		[SerializeField]
 		float _lineThickness = 3f;
-		[SerializeField]
-		GameObject _linePrefab, _xPrefab, _oPrefab, _xHintPrefab, _oHintPrefab;
+		[SerializeField, Required]
+		GameObject _linePrefab, _buttonPrefab, _xPrefab, _oPrefab, _xHintPrefab, _oHintPrefab;
 
 		public float LineWidth => _lineThickness;
 
 		public GameObject LinePrefab => _linePrefab;
-
+		public GameObject ButtonPrefab => _buttonPrefab;
 		public override IDataOverride Create(IResolver resolver)
 			=> new DataOverride<GameStyle, IGameStyle>(this);
 		public GameObject GetHintPrefab(Team team)

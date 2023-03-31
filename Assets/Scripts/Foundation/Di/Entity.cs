@@ -99,7 +99,16 @@ namespace BB
 			foreach (var subscription in _subscriptions)
 				subscription.Unsubscribe();
 		}
-		public void AddSubscription(ISubscription sub) => _subscriptions.Add(sub);
+		public void AddSubscription(ISubscription sub)
+		{
+			_subscriptions.Add(sub);
+			//resolve subscription if this has been appended after installation
+			if (CurrentState != State.Uninitialized)
+				sub.Init();
+			//subscribe if entity has already spawned
+			if (CurrentState == State.Spawned)
+				sub.Subscribe();
+		}
 	}
 	//queue for injection does not work with records
 	//this has to be a class

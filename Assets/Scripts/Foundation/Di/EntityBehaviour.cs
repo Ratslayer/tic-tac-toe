@@ -11,6 +11,7 @@ namespace BB
 
 		public IResolver Resolver { get; private set; }
 		public EntityState State { get; private set; }
+		public bool IsPooled { get; private set; } = true;
 		public bool Installed => Resolver != null;
 		private void Start()
 		{
@@ -19,8 +20,12 @@ namespace BB
 		void Install()
 		{
 			if (Resolver != null)
+			{
+				this.Append<DespawnChildrenOnDespawn>();
 				return;
+			}
 			//if this is reached, it means that this object is not pooled
+			IsPooled = false;
 			var parentRoot = transform.parent ? transform.parent.GetComponentInParent<EntityBehaviour>() : default;
 			IResolver parentResolver = default;
 			if (parentRoot)
@@ -28,9 +33,9 @@ namespace BB
 				parentRoot.Install();
 				parentResolver = parentRoot.Resolver;
 			}
-			var entity = InstallerUtils.CreateGoEntity(gameObject, parentResolver, null, true);
-			entity.Append<DestroyOnDespawn>();
-			entity.Spawn();
+			InstallerUtils.CreateGoEntity(gameObject, parentResolver, null, true);
+			this.Append<DestroyOnDespawn>();
+			this.Spawn();
 		}
 		public void Install(IBinder binder, bool root)
 		{
@@ -62,12 +67,26 @@ namespace BB
 
 		public void Despawn() => InvokeForAll(e => e.State.Despawn());
 		public void Dispose() => InvokeForAll(e => e.State.Dispose());
-
+		static void DespawnChildren(EntityTransform t)
+		{
+			foreach (var child in t.Value.GetComponentsInChildren<EntityBehaviour>())
+				if (child.IsPooled)
+					child.Despawn();
+		}
+		sealed record DespawnChildrenOnDespawn(EntityTransform Transform)
+			: EntitySystem, IOnDespawn
+		{
+			public void OnDespawn()
+			{
+				DespawnChildren(Transform);
+			}
+		}
 		sealed record DestroyOnDespawn(EntityTransform Transform)
 			: EntitySystem, IOnDespawn
 		{
 			public void OnDespawn()
 			{
+				DespawnChildren(Transform);
 				Destroy(Transform.Value.gameObject);
 			}
 		}
