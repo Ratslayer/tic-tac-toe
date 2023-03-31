@@ -29,6 +29,7 @@ namespace BB
 			{
 				BindEntity(binder);
 				install(binder);
+				binder.Install();
 				return binder.Resolve<IEntity>();
 			}
 			catch (Exception ex)
@@ -54,9 +55,9 @@ namespace BB
 			Action<IBinder> install,
 			bool isRoot)
 		{
-			if (instance.TryGetComponent(out EntityBehaviour eb)
-				&& eb.Resolver != null)
-				return eb;
+			var entity = instance.GetOrCreateComponent<EntityBehaviour>();
+			if (entity.Installed)
+				return entity;
 			var binder = CreateBinder(instance, parent);
 			try
 			{
@@ -66,7 +67,6 @@ namespace BB
 				install?.Invoke(binder);
 				binder.Install();
 				//get entity
-				var entity = instance.GetOrCreateComponent<EntityBehaviour>();
 				entity.Install(binder, isRoot);
 				return entity;
 			}

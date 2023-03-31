@@ -11,6 +11,7 @@ namespace BB
 
 		public IResolver Resolver { get; private set; }
 		public EntityState State { get; private set; }
+		public bool Installed => Resolver != null;
 		private void Start()
 		{
 			Install();
@@ -38,7 +39,7 @@ namespace BB
 			
 			foreach (var installer in GetComponentsInChildren<AbstractInstallerBehaviour>())
 			{
-				if (installer.GetComponent<EntityBehaviour>())
+				if (installer.GetComponent<EntityBehaviour>().Installed)
 					continue;
 				var entity = InstallerUtils.CreateGoEntity(installer.gameObject, binder, null, false);
 				_children.Add(entity);
