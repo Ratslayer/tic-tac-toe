@@ -1,19 +1,15 @@
 ﻿using MessagePipe;
+using System.Linq;
 using UnityEngine;
 
 namespace BB
 {
-	public enum Team
-	{
-		None = 0,
-		X = 1,
-		O = 2
-	}
 	public sealed record GridTeams : AbstractGridTable<Team> { }
 	public sealed record RestartGameEvent;
 	public sealed record T3Manager(
 		GridTeams Teams,
 		GameStyle Style,
+		GameRules Rules,
 		IPublisher<PlayedTurnEvent> Played,
 		IPublisher<SpawnGridEntityEvent> SpawnGridEntity,
 		IPublisher<DespawnGridEntityEvent> DespawnGridEntity) : EntitySystem
@@ -25,7 +21,7 @@ namespace BB
 		[Subscribe]
 		void OnGameRestart(RestartGameEvent _)
 		{
-			Team = Team.X;
+			Team = Rules.Value.GetNextTeam(null);
 			Turn = 0;
 		}
 		[Subscribe]
@@ -33,15 +29,14 @@ namespace BB
 		{
 			if (msg.Cell == null)
 				return;
-			if (Teams.Get(msg.Cell) != Team.None)
+			if (Teams.Get(msg.Cell) != null)
 				return;
 			DespawnGridEntity.Publish(new(msg.Cell));
-			var prefab = Style.Value.GetTilePrefab(Team);
-			SpawnGridEntity.Publish(new(msg.Cell, prefab));
+			SpawnGridEntity.Publish(new(msg.Cell, Team._icon));
 			Teams.Set(msg.Cell, Team);
 			Turn++;
 			var oldTeam = Team;
-			Team = Team == Team.X ? Team.O : Team.X;
+			Team = Rules.Value.GetNextTeam(Team);//Team == Team.X ? Team.O : Team.X;
 			Played.Publish(new(msg.Cell, oldTeam, Turn));
 		}
 	}
@@ -69,7 +64,7 @@ namespace BB
 						}
 				if (msg.TurnNumber == entities.NumCells)
 				{
-					won = Team.None;
+					won = null;
 					return true;
 				}
 				won = default;

@@ -8,6 +8,18 @@ using UnityEngine.Animations;
 using UnityEngine.UI;
 namespace BB
 {
+	public static class EnumerableExtensions
+	{
+		public static T GetNextCyclic<T>(this IEnumerable<T> e, T value)
+		{
+			var wasLast = false;
+			foreach (var item in e)
+				if (wasLast)
+					return item;
+				else wasLast = item.Equals(value);
+			return e.First();
+		}
+	}
 	public static class GC
 	{
 		public static void SetActiveSafe(this Component comp, bool value)

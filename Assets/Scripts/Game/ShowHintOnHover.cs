@@ -40,8 +40,8 @@ namespace BB
 			ClearHint();
 			if (cell == null || cell.Entities.Get(cell) != null)
 				return;
-			var prefab = Style.Value.GetHintPrefab(Manager.Team);
-			Spawn.Publish(new(cell, prefab));
+			//var prefab = Style.Value.GetHintPrefab(Manager.Team);
+			Spawn.Publish(new(cell, Manager.Team._hint));
 			_cell = cell;
 		}
 	}

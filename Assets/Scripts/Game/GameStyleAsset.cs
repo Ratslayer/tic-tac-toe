@@ -16,11 +16,11 @@ namespace BB
 		public GameObject ButtonPrefab => _buttonPrefab;
 		public override IDataOverride Create(IResolver resolver)
 			=> new DataOverride<GameStyle, IGameStyle>(this);
-		public GameObject GetHintPrefab(Team team)
-				=> GetPrefab(team, _xHintPrefab, _oHintPrefab);
-		public GameObject GetTilePrefab(Team team)
-			=> GetPrefab(team, _xPrefab, _oPrefab);
-		GameObject GetPrefab(Team team, GameObject x, GameObject o) => team == Team.X ? x : o;
+		//public GameObject GetHintPrefab(Team team)
+		//		=> GetPrefab(team, _xHintPrefab, _oHintPrefab);
+		//public GameObject GetTilePrefab(Team team)
+		//	=> GetPrefab(team, _xPrefab, _oPrefab);
+		//GameObject GetPrefab(Team team, GameObject x, GameObject o) => team == Team.X ? x : o;
 	}
 
 }
