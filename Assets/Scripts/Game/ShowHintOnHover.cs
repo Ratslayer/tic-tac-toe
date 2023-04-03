@@ -8,6 +8,7 @@ namespace BB
 		GameObjectPools Pools,
 		T3Manager Manager,
 		GridTeams Teams,
+		GameOver GameOver,
 		IPublisher<SpawnGridEntityEvent> Spawn,
 		IPublisher<DespawnGridEntityEvent> Despawn) : EntitySystem
 	{
@@ -38,7 +39,9 @@ namespace BB
 		void UpdateHint(CellData cell)
 		{
 			ClearHint();
-			if (cell == null || cell.Entities.Get(cell) != null)
+			if (GameOver.Value 
+				|| cell == null 
+				|| cell.Entities.Get(cell) != null)
 				return;
 			//var prefab = Style.Value.GetHintPrefab(Manager.Team);
 			Spawn.Publish(new(cell, Manager.Team._hint));

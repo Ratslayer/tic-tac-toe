@@ -23,6 +23,7 @@ MonoBehaviour:
     SerializationNodes: []
   _lineThickness: 3
   _linePrefab: {fileID: 1836394688954136172, guid: ddfb1dff60a474e44bfb10a0fbf43550, type: 3}
+  _buttonPrefab: {fileID: 98081491762369274, guid: 5ffb0acd1bad25145882e05e9853e9f4, type: 3}
   _xPrefab: {fileID: 1836394688954136172, guid: 32df187ed8b467847b62ce72fd6cab58, type: 3}
   _oPrefab: {fileID: 1836394688954136172, guid: b542e384acaa89149aec84a91608f55d, type: 3}
   _xHintPrefab: {fileID: 1836394688954136172, guid: 3e38e4cdf62f2e54fb1552d1a26f004e, type: 3}

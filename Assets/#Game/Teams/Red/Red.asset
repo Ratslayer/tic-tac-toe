@@ -21,6 +21,6 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  _name: 
-  _icon: {fileID: 0}
-  _hint: {fileID: 0}
+  _name: Red
+  _icon: {fileID: 1836394688954136172, guid: b542e384acaa89149aec84a91608f55d, type: 3}
+  _hint: {fileID: 1836394688954136172, guid: 4bc6b61d11800b547a5974102c5ab46b, type: 3}

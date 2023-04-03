@@ -24,3 +24,4 @@ MonoBehaviour:
   _extensions: []
   _installers: []
   _defaultState: {fileID: 11400000, guid: 92bb348d547bdb645976bf8a9ef71637, type: 2}
+  _mainMenu: {fileID: 660745873801891465, guid: 1fb9bb2c80f4e91488b0adccb2d5cf69, type: 3}

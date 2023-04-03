@@ -6,10 +6,13 @@ namespace BB
 {
 	public sealed record GridTeams : AbstractGridTable<Team> { }
 	public sealed record RestartGameEvent;
+	public sealed record StopGameEvent;
+	public sealed class GameOver : VarData<bool> { }
 	public sealed record T3Manager(
 		GridTeams Teams,
 		GameStyle Style,
 		GameRules Rules,
+		GameOver GameOver,
 		IPublisher<PlayedTurnEvent> Played,
 		IPublisher<SpawnGridEntityEvent> SpawnGridEntity,
 		IPublisher<DespawnGridEntityEvent> DespawnGridEntity) : EntitySystem
@@ -23,10 +26,14 @@ namespace BB
 		{
 			Team = Rules.Value.GetNextTeam(null);
 			Turn = 0;
+			GameOver.Value = false;
+			UpdateTeamName();
 		}
 		[Subscribe]
 		void OnGridClick(ClickedCellEvent msg)
 		{
+			if (GameOver.Value)
+				return;
 			if (msg.Cell == null)
 				return;
 			if (Teams.Get(msg.Cell) != null)
@@ -36,13 +43,16 @@ namespace BB
 			Teams.Set(msg.Cell, Team);
 			Turn++;
 			var oldTeam = Team;
-			Team = Rules.Value.GetNextTeam(Team);//Team == Team.X ? Team.O : Team.X;
+			Team = Rules.Value.GetNextTeam(Team);
+			UpdateTeamName();
 			Played.Publish(new(msg.Cell, oldTeam, Turn));
 		}
+		void UpdateTeamName() => Publish(new GameLogEvent($"{Team} turn"));
 	}
 	public sealed record T3RuleChecker(
 		GameRules Rules,
 		GridTeams Teams,
+		GameOver GameOver,
 		IPublisher<RestartGameEvent> Restart) : EntitySystem
 	{
 		[Subscribe]
@@ -51,8 +61,13 @@ namespace BB
 			var entities = msg.Cell.Entities;
 			if (!IsGameOver(msg.Team, out var team))
 				return;
-			Debug.Log($"Team {team} has won on turn {msg.TurnNumber}!");
-			Restart.Publish();
+			var text = team != null
+				? $"Team {team} has won on turn {msg.TurnNumber}!"
+				: "It's a draw!";
+			Publish(new GameLogEvent(text));
+			Publish(new StopGameEvent());
+			GameOver.Value = true;
+			//Restart.Publish();
 			bool IsGameOver(Team team, out Team won)
 			{
 				for (int i = -1; i <= 1; i++)

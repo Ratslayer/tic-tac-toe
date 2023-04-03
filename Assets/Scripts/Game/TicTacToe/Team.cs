@@ -10,7 +10,9 @@ namespace BB
 	//}
 	public sealed class Team : BaseScriptableObject
 	{
-		public string _name;
-		public GameObject _icon, _hint;
+		[SerializeField]
+		string _name;
+		public GameObject _icon, _hint, _winIcon;
+		public override string ToString() => _name; 
 	}
 }

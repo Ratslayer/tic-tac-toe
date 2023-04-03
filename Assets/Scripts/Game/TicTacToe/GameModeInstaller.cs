@@ -33,17 +33,9 @@ namespace BB
 		public void OnSpawn()
 		{
 			Controller.Enter(Installer._state);
-			_grid = Installer._ui.Spawn(new(null), out var ui);
-			Button("Restart", () => Publish(new RestartGameEvent()));
-			Button("Exit", Exit);
+			_grid = Installer._ui.gameObject.Spawn(new(null));
 			Publish(new ResizeGridEvent(Rules.Value.NumColumns));
 			Publish(new RestartGameEvent());
-			void Exit()
-			{
-				Entity.Despawn();
-				MainMenu.Value.Spawn(new(null));
-			}
-			void Button(string name, Action action) => Style.Value.ButtonPrefab.SpawnButton(ui._buttons, name, action);
 		}
 	}
 }

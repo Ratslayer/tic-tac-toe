@@ -24,3 +24,6 @@ MonoBehaviour:
   _numRows: 10
   _numColumns: 10
   _winSize: 4
+  _teams:
+  - {fileID: 11400000, guid: 1ad2e1fc913b9f3439936ca0780ecf5c, type: 2}
+  - {fileID: 11400000, guid: 54b021d0b27e41945aa014f6cdec4d13, type: 2}
