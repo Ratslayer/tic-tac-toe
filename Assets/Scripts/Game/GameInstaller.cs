@@ -6,18 +6,14 @@ using UnityEngine;
 namespace BB
 {
 	public sealed record MainMenuPrefab(GameObject Value) : ConstData<GameObject>(Value);
-	public sealed class GameInstaller : AbstractInstaller
+	public sealed class GameInstaller : AbstractProjectInstaller
 	{
-		[Required, SerializeField]
-		AbstractStateProvider _defaultState;
+		
 		[Required, SerializeField]
 		GameObject _mainMenu;
 		protected override void Install(IBinder binder)
 		{
-			binder.StateMachine(_defaultState);
-			binder.System<GameObjectPools>();
-			binder.System<EntityPools>();
-			binder.System<GlobalSystems.InitSystems>();
+			base.Install(binder);
 			binder.Const<MainMenuPrefab>(new(_mainMenu));
 			binder.Var<GameOver>();
 			binder.Over<GameRules>();

@@ -29,7 +29,6 @@ namespace BB
 		{
 			_grid.Despawn();
 		}
-
 		public void OnSpawn()
 		{
 			Controller.Enter(Installer._state);

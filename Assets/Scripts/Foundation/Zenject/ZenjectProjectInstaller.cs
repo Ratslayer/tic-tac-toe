@@ -9,7 +9,7 @@ namespace BB
 		public const string RESOURCE_NAME = "ProjectInstaller";
 		public const string CONTAINER_NAME = "Project";
 		[SerializeField]
-		private AbstractInstaller _installerAsset;
+		private AbstractProjectInstaller _installerAsset;
 		IBinder _binder;
 		void Install()
 		{
@@ -46,7 +46,7 @@ namespace BB
 			//	return;
 			//_initialized = true;
 			var installer = Resources.Load<ZenjectProjectInstaller>(RESOURCE_NAME);
-			if (!Log.AssertNotNull(installer, $"No installer '{RESOURCE_NAME}' found in resources."))
+			if (!Log.AssertNotNull(installer, $"No installer '{RESOURCE_NAME}' of type {nameof(ZenjectProjectInstaller)} found in resources."))
 				return;
 			installer.Install();
 			//ProjectContext.Instance.EnsureIsInitialized();
